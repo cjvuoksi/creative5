@@ -21,9 +21,11 @@ function Quiz() {
         part_past: '',
         part_act: ''
     }); 
+    const [v, setV] = useState('')
     const aste = {
         "ks": "ks",
         "st": "st",
+        "tk": "tk",
         "pp": "p",
         "tt": "t",
         "kk": "k",
@@ -43,8 +45,13 @@ function Quiz() {
         "k": ''
     }
 
+    const typeSelvi = [ //Selvitä irregulars
+        'erit','hirvit','hävit','levit','lämmit','katket','selvit' ,'siit' ,'virit' ,'haljet','iljet','hävet','kiivet','revet','ruvet','langet','kasket','korvet','lohjet','noet','poiket','puhjet','ratket','juljet','kammet','kanget','keret','kerjet','heret','herjet','hirvet','kivet','livet','nimet','piet','ristet','änget'
+    ]
     
-
+    const typeLaho = [ //Lahota irregulars
+        'lahot','hävit','selvit','virit','hirvit','kasket','kovet','pahet','plärät','suuret', 'vahvet', 'hiljet', 'himmet', 'hirvet','kevet','levet','lievet','lähet','pehmet','selvet','syvet', 'vähet'
+    ]
 
 
     const randomVerb = () => {
@@ -56,29 +63,45 @@ function Quiz() {
     }
 
     const parseVerb = () => {
-        let verb = 'tulla'
+        let verb = v; 
         console.log(verb); 
         let three = verb.slice(-3); 
         let two = verb.slice(-2); 
-        if (two === "da" || two === 'dä') { //Irregular nähdä käydä juoda syödä
+        if (two === "da" || two === 'dä') { //Irregular nähdä käydä juoda syödä lyödä tuoda luoda suoda
             let stem = verb.slice(0,-2); 
+            let soft = stem; 
             let past = verb.slice(0,-3) + 'i';
+            let softPast = past; 
+            if (stem.slice(-1) === 'o' || stem.slice(-1) === 'ö' || stem.slice(-1) === 'e') {
+                past = stem.slice(0,-2) + stem.slice(-1) + 'i'; 
+                softPast = past; 
+            }
+            if (stem.slice(-3) === "käy") {
+                past = stem.slice(0,-1) + 'vi'; 
+                softPast = past; 
+            }
+            if (stem.slice(-1) === 'h') {
+                past = stem.slice(0,-1) + 'ki';
+                soft = stem.slice(0,-1) + 'e'; 
+                stem = stem.slice(0,-1) + 'ke'; 
+            }
+
             let a = verb.slice(-1); 
             setConj({
                 present: [
-                    stem + 'n',
-                    stem + 't',
+                    soft + 'n',
+                    soft + 't',
                     stem,
-                    stem + 'mme',
-                    stem + 'tte',
+                    soft + 'mme',
+                    soft + 'tte',
                     stem + 'v' + a + 't'
                 ],
                 past: [
-                    past + 'n',
-                    past + 't',
+                    softPast + 'n',
+                    softPast + 't',
                     past,
-                    past + 'mme',
-                    past + 'tte',
+                    softPast + 'mme',
+                    softPast + 'tte',
                     past + 'v' + a + 't'
                 ],
                 conditional: [
@@ -90,11 +113,11 @@ function Quiz() {
                     past + 'siv' + a + 't'
                 ],
                 pass_present: verb + a + 'n',
-                pass_past: stem + 'tiin',
-                pass_conditional: stem + 't' + a + 'isiin',
-                part_pass_past: stem + 't' + (a === 'a' ? 'u' : 'y'),
-                part_pass_act: stem + 't' + a + 'v' + a,
-                part_past: stem + 'n' + (a === 'a' ? 'u' : 'y') + 't',
+                pass_past: verb.slice(0,-2) + 'tiin',
+                pass_conditional: verb.slice(0,-2) + 't' + a + 'isiin',
+                part_pass_past: verb.slice(0,-2) + 't' + (a === 'a' ? 'u' : 'y'),
+                part_pass_act: verb.slice(0,-2) + 't' + a + 'v' + a,
+                part_past: verb.slice(0,-2) + 'n' + (a === 'a' ? 'u' : 'y') + 't',
                 part_act: stem + 'v' + a
             })
         }
@@ -104,7 +127,6 @@ function Quiz() {
             let stem = verb.slice(0,-1); 
             let a = verb.slice(-1); 
             let soft = soften(stem); 
-            console.log("Softened stem: " + soft);
             let past = (soft.slice(-1) === a || soft.slice(-1) === 'e' || soft.slice(-1) === 'i') ? soft.slice(0,-1) : soft;
             let condS = (soft.slice(-1) === a || soft.slice(-1) === 'e' || soft.slice(-1) === 'i') ? stem.slice(0,-1) : stem; 
             let pastS = condS; 
@@ -192,15 +214,22 @@ function Quiz() {
                 part_act: stem + 'v' + a
             }); 
         }
-        else if (two[0] === 't') { //Irregular eritä, hirvitä, hävitä, levitä, lämmitä, selvitä, siitä, viritä
-            //haljeta, iljetä, hävetä, kiivetä, revetä, ruveta, langeta.
+        else if (two[0] === 't') {
             let a = verb.slice(-1); 
             let soft = verb.slice(0,-1); 
             verb = harden(verb); 
             let stem = verb.slice(0,-2); 
             let past = ''; 
             let cond = ''; 
-            if (three[0] === 'e') {
+            if (typeLaho.indexOf(soft) >= 0) {
+                stem = soft.slice(0,-1); 
+            }
+            if (typeSelvi.indexOf(soft) >= 0) {
+                past = stem + 'si';
+                cond = stem + a +'i'; 
+                stem += a; 
+            } 
+            else if (three[0] === 'e') {
                 past = stem + 'ni';
                 cond = past; 
                 stem += 'ne'; 
@@ -210,9 +239,14 @@ function Quiz() {
                 past = stem.slice(0,-1) + 'i'; 
                 cond = past; 
             }
-            else {
+            else if (three[0] === 'a') {
                 past = stem + 'si'; 
                 cond = stem + 'i'; 
+                stem += a; 
+            }
+            else {
+                past = stem + 'si'; 
+                cond = stem + a + 'i'; 
                 stem += a; 
             }
             setConj({
@@ -275,7 +309,7 @@ function Quiz() {
     const harden = (text) => {
         let begin = '' 
         let end = ''
-        let vahva = ['ll','it','et','at','ät']
+        let vahva = ['ll','it','et','at','ät','ot']
         let index = -1; 
         for (let i of vahva) {
             index = text.lastIndexOf(i) > index ? text.lastIndexOf(i) : index; 
@@ -295,12 +329,12 @@ function Quiz() {
                 text = text.slice(index-2, index);
             }
             let vaihtelu = true; 
-            if (isVowel(text[1]) && end.search('ll') === -1) {
-                text += 'k';
+            if (isVowel(text[1])) {
+                if (end.search('ll') === -1) text += 'k';
                 vaihtelu = false; 
             }
             for (let j of Object.keys(aste)) {
-                if (vaihtelu && text.search(aste[j]) >= 0 && aste[j]) {
+                if (vaihtelu && text.search(aste[j]) >= 0 && aste[j] && text.search(j) < 0) {
                     console.log(j); 
                     text = text.replace(aste[j], j);
                     vaihtelu = false; 
@@ -314,7 +348,7 @@ function Quiz() {
         <div>
             <button onClick={() => alert(randomVerb())} type="button">Random verb</button>
             <button onClick={parseVerb} type="button">Parse Verb</button>   
-            <input placeholder="tense" defaultValue="" onChange={e => console.log(harden(e.target.value))}></input>
+            <input placeholder="tense" defaultValue="" onChange={e => setV(e.target.value)}></input>
             <button onClick={() => console.log(conj)}>Log conjugations</button>
                 {verbs ?
                     <table>
