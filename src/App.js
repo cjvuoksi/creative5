@@ -7,20 +7,61 @@ import About from "./pages/about";
 import None from "./pages/none"
 
 function App() {
-  const [settings, setSettings] = useState({})
-  
-  function setCookie() {
+  const [settings, setSettings] = useState({}); 
+
+  const parse = (string) => {
+    if (string === 'true') return true;
+    else return false; 
+  }
+
+  const signIn = () => {
+    if (getCookie('id')) {
+      setSettings([
+        {'1s': parse(getCookie('1s'))},
+        {'2s': parse(getCookie('2s'))},
+        {'3s': parse(getCookie('3s'))},
+        {'1p': parse(getCookie('1p'))},
+        {'2p': parse(getCookie('2p'))},
+        {'3p': parse(getCookie('3p'))},
+        {'present': parse(getCookie('present'))},
+        {'past': parse(getCookie('past'))},
+        {'passives': parse(getCookie('pass'))},
+        {'participles': parse(getCookie('part'))}
+      ])
+    }
+    else {
+      setCookie(
+        ['1s','2s','3s','1p','2p','3p','present','past','pass','part'],[true,true,true,true,true,true,true,true,true,true]
+      )
+    }
 
   }
 
-  function getCookie(name) {
+  useEffect(signIn, []); 
 
+  function setCookie(name, val) {
+    let days = 365; 
+    const d = new Date();    //   hr min s ms
+    d.setTime(d.getTime() + (days*24*60*60*1000));  
+    console.log("date: " + d.toUTCString()); 
+    document.cookie = "id=true; " + "expires=" + d.toUTCString() + "; path=/"
+    console.log(document.cookie)
+    for(let i = 0; i < name.length; i++) {
+      document.cookie = name[i] + "=" + val[i] + "; " + "expires=" + d.toUTCString() + "; path=/"
+    }
   }
 
-  function isCookie() {
-    
+  function getCookie(attribute) {
+    let name = attribute + "=";
+    let cookieText = decodeURIComponent(document.cookie).split(';');
+    for(let item of cookieText) {
+      let index = item.indexOf(attribute); 
+      if (index >= 0) {
+        return item.substring(index + name.length); 
+      }
+    }
+    return "";
   }
-
 
   return (
     <Router>
@@ -28,10 +69,11 @@ function App() {
         <NavLink to="/">Quiz</NavLink>
         <NavLink to="/settings">Settings</NavLink>
         <NavLink to="/about">About</NavLink>
+        <button onClick={() => {console.log(settings)}}>Log</button>
       </nav>
       <Routes>
         <Route path="/" element={<Quiz/>}/>        
-        <Route path="/settings" element={<Settings/>}>Settings</Route>
+        <Route path="/settings" element={<Settings settings={settings} setSettings={setSettings} signIn={signIn} setCookie={setCookie}/>}></Route>
         <Route path="/about" element={<About/>}></Route>
         <Route path="*" element={<None/> }></Route>
       </Routes>

@@ -2,7 +2,7 @@ import { lastIndexOf, replace } from 'lodash';
 import { useEffect, useState } from 'react'; 
 const verbs = require("../verbs.json");
 
-function Quiz() {
+function Quiz( { settings }) {
     const [conj, setConj] = useState({
         present: [
 
