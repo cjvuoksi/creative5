@@ -25,14 +25,16 @@ function App() {
         {'3p': parse(getCookie('3p'))},
         {'present': parse(getCookie('present'))},
         {'past': parse(getCookie('past'))},
+        {'conditional': parse(getCookie('cond'))},
         {'passives': parse(getCookie('pass'))},
         {'participles': parse(getCookie('part'))}
       ])
     }
     else {
       setCookie(
-        ['1s','2s','3s','1p','2p','3p','present','past','pass','part'],[true,true,true,true,true,true,true,true,true,true]
+        ['1s','2s','3s','1p','2p','3p','present','past','cond','pass','part'],[true,true,true,true,true,true,true,true,true,true,true]
       )
+      signIn(); 
     }
 
   }
@@ -72,7 +74,7 @@ function App() {
         <button onClick={() => {console.log(settings)}}>Log</button>
       </nav>
       <Routes>
-        <Route path="/" element={<Quiz/>}/>        
+        <Route path="/" element={<Quiz settings={settings} signIn={signIn}/>}/>        
         <Route path="/settings" element={<Settings settings={settings} setSettings={setSettings} signIn={signIn} setCookie={setCookie}/>}></Route>
         <Route path="/about" element={<About/>}></Route>
         <Route path="*" element={<None/> }></Route>

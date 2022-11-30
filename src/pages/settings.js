@@ -42,7 +42,7 @@ function Settings( {settings, setSettings, signIn, setCookie } ) {
             i[Object.keys(i)[0]] = pref[index]; 
         }
         setCookie(['1s','2s','3s','1p','2p','3p','present','past','pass','part'], pref); 
-        // navigate("/");
+        signIn(); 
     }
 
     const upPref = (e) => {

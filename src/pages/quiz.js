@@ -2,7 +2,7 @@ import { lastIndexOf, replace } from 'lodash';
 import { useEffect, useState } from 'react'; 
 const verbs = require("../verbs.json");
 
-function Quiz( { settings }) {
+function Quiz( { settings, signIn }) {
     const [conj, setConj] = useState({
         present: [
 
@@ -22,6 +22,13 @@ function Quiz( { settings }) {
         part_act: ''
     }); 
     const [v, setV] = useState('')
+    const [vQuiz, setVQuiz] = useState(); 
+    const [key,setKey] = useState(); 
+    const [resp,setResp] = useState(Array(25).fill(null)); 
+    useEffect(() => {
+        if(Array.isArray(settings)) {upVQuiz();}
+        else {signIn();} 
+    }, [conj]); 
     const aste = {
         "ks": "ks",
         "st": "st",
@@ -53,6 +60,7 @@ function Quiz( { settings }) {
         'lahot','hävit','selvit','virit','hirvit','kasket','kovet','pahet','plärät','suuret', 'vahvet', 'hiljet', 'himmet', 'hirvet','kevet','levet','lievet','lähet','pehmet','selvet','syvet', 'vähet'
     ]
 
+    const desc = ['minä','sinä','hän','me','te','he']; 
 
     const randomVerb = () => {
         let flat = []; 
@@ -344,12 +352,107 @@ function Quiz( { settings }) {
         return (begin + text + end); 
     }
 
+    const upResp = async(e) => {
+        let val = e.target.value; 
+        let index = e.target.dataset.index; 
+        let tmp = resp.filter(f => true);
+        tmp[index] = val; 
+        await setResp(tmp); 
+        console.log(resp); 
+    }
+
+    const upVQuiz = () => {
+        let quiz = []
+        let person = [settings[0]['1s'],settings[1]['2s'],settings[2]['3s'],settings[3]['1p'],settings[4]['2p'],settings[5]['3p']] 
+        let present = settings[6]['present'];
+        let past = settings[7]['past']; 
+        let cond = settings[8]['conditional']; 
+        let pass = settings[9]['passives'];
+        let part = settings[10]['participles']; 
+        
+        for (let i = 0; i < conj.present.length; i++) {
+            if (person[i] && present) {
+                quiz.push(conj.present[i]);
+            }
+            else {
+                quiz.push(null); 
+            }
+        }
+        for (let i = 0; i < conj.past.length; i++) {
+            if (person[i] && past) {
+                quiz.push(conj.past[i]);
+            }
+            else {
+                quiz.push(null); 
+            }
+        }
+        for (let i = 0; i < conj.conditional.length; i++) {
+            if (person[i] && cond) {
+                quiz.push(conj.conditional[i]);
+            }
+            else {
+                quiz.push(null); 
+            }
+        }
+        if (pass) {
+            quiz.push(conj.pass_present); 
+            quiz.push(conj.pass_past);
+            quiz.push(conj.pass_present); 
+        }
+        else {
+            quiz.push(null); quiz.push(null); quiz.push(null);
+        }
+        if (part) {
+            quiz.push(conj.part_pass_past); 
+            quiz.push(conj.part_pass_act);
+            quiz.push(conj.part_past);
+            quiz.push(conj.part_act); 
+        }
+        else {
+            quiz.push(null); quiz.push(null); quiz.push(null); quiz.push(null);
+        }
+        setKey(quiz); 
+        console.log(quiz);  
+        setVQuiz(quiz.map((value, index) => {
+            return (
+                (value ? (
+                <div key={value}>
+                    {present && index === 0 ? <h1>Present tense</h1> : ''}
+                    {past && index === 6 ? <h2>Past tense</h2>: ''}
+                    {cond && index === 12 ? <h2>Conditional</h2>: ''}
+                    {pass && index === 18 ? <h2>Passives</h2>: ''}
+                    {index / 3 < 6 ? 
+                        <div>
+                            <span>{desc[index % 6]}</span>
+                            <input data-index={index} onChange={upResp}></input>
+                            <span className='hidden'>{value}</span>
+                        </div> : " " }
+                    {index >= 18 ? 
+                        <div>
+                            {pass && index === 18 ? <h2>Passives</h2>: ''}
+                            {part && index === 21 ? <h2>Participles</h2>: ''}
+                            {index }
+                        </div> : ''}
+                </div>) 
+                : <div>
+                    {present && index === 0 ? <h1>Present tense</h1> : ''}
+                    {past && index === 6 ? <h2>Past tense</h2>: ''}
+                    {cond && index === 12 ? <h2>Conditional</h2>: ''}
+                    {pass && index === 18 ? <h2>Passives</h2>: ''}
+                </div>)
+            )
+        }));  
+    }
+
     return(
         <div>
             <button onClick={() => alert(randomVerb())} type="button">Random verb</button>
             <button onClick={parseVerb} type="button">Parse Verb</button>   
             <input placeholder="tense" defaultValue="" onChange={e => setV(e.target.value)}></input>
             <button onClick={() => console.log(conj)}>Log conjugations</button>
+            <button onClick={() => console.log(resp)}>Log response</button>
+            <button onClick={() => console.log(key)}>Log key</button>
+            {vQuiz}
                 {verbs ?
                     <table>
                         {verbs.A.map(verb => {
