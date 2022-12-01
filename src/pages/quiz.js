@@ -17,7 +17,6 @@ function Quiz( { settings, signIn }) {
     }); 
     const [v, setV] = useState('')
     const [vQuiz, setVQuiz] = useState(); 
-    const [key,setKey] = useState(); 
     const [resp,setResp] = useState(Array(25).fill(''));//FLAG
     const [hidden, setHidden] = useState(true); 
     let navigate = useNavigate()
@@ -432,13 +431,12 @@ function Quiz( { settings, signIn }) {
         else {
             quiz.push(''); quiz.push(''); quiz.push(''); quiz.push('');//FLAG
         }
-        setKey(quiz); 
         console.log(quiz);  
         setVQuiz(quiz.map((value, index) => {
             return (
                 (value ? (
                 <div key={index}>
-                    {present && index === 0 ? <h1>Present tense</h1> : ''}
+                    {present && index === 0 ? <h2>Present tense</h2> : ''}
                     {past && index === 6 ? <h2>Past tense</h2>: ''}
                     {cond && index === 12 ? <h2>Conditional</h2>: ''}
                     {pass && index === 18 ? <h2>Passives</h2>: ''}
@@ -483,13 +481,14 @@ function Quiz( { settings, signIn }) {
         setHidden(false)
     }
 
+    //DEBUG BUTTONS
+    // <button onClick={() => console.log(conj)}>Log conjugations</button>
+    // <button onClick={() => console.log(resp)}>Log response</button>
+    // <button onClick={() => console.log(key)}>Log key</button>
+    // <input placeholder="tense" defaultValue="" onChange={e => parseVerb(e.target.value)}></input>
+
     return(
         <div className="main">
-            <input placeholder="tense" defaultValue="" onChange={e => parseVerb(e.target.value)}></input>
-            <button onClick={() => console.log(conj)}>Log conjugations</button>
-            <button onClick={() => console.log(resp)}>Log response</button>
-            <button onClick={() => console.log(key)}>Log key</button>
-
             <h1>{v}</h1>
             {vQuiz}
             <button onClick={hidden ? submitResp : nextVerb}>Submit</button>
