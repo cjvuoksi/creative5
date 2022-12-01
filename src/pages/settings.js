@@ -25,7 +25,6 @@ function Settings( {settings, setSettings, signIn, setCookie } ) {
     const getPref = () => {
         let tmp = JSON.parse(JSON.stringify(settings)); 
         let tmpPref = []; 
-        let index = 0; 
         for (let i of tmp) {
             tmpPref.push(i[Object.keys(i)[0]]); 
         }

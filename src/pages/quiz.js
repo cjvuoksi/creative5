@@ -24,11 +24,18 @@ function Quiz( { settings, signIn }) {
     const [v, setV] = useState('')
     const [vQuiz, setVQuiz] = useState(); 
     const [key,setKey] = useState(); 
-    const [resp,setResp] = useState(Array(25).fill(null)); 
+    let empty = Array(25).fill(null)
+    const [resp,setResp] = useState(empty); 
+
     useEffect(() => {
         if(Array.isArray(settings)) {upVQuiz();}
         else {signIn();} 
     }, [conj]); 
+
+    useEffect(() => {
+        if(Array.isArray(settings)) upVQuiz(); 
+    },[resp])
+
     const aste = {
         "ks": "ks",
         "st": "st",
@@ -60,7 +67,7 @@ function Quiz( { settings, signIn }) {
         'lahot','hävit','selvit','virit','hirvit','kasket','kovet','pahet','plärät','suuret', 'vahvet', 'hiljet', 'himmet', 'hirvet','kevet','levet','lievet','lähet','pehmet','selvet','syvet', 'vähet'
     ]
 
-    const desc = ['minä','sinä','hän','me','te','he']; 
+    const desc = ['minä','sinä','hän','me','te','he','present','past','conditional','past passive','present passive','past active','present active']; 
 
     const randomVerb = () => {
         let flat = []; 
@@ -182,7 +189,7 @@ function Quiz( { settings, signIn }) {
             verb = harden(verb); 
             let stem = verb.slice(0,-2) + 'e'; 
             let past = verb.slice(0,-2) + 'i'; 
-            if (verb === "juosta") {
+            if (verb === "juosta") { //Irregular juosta
                 stem = verb.slice(0,-3) + 'kse'; 
                 past = verb.slice(0,-3) + 'ksi'; 
             }
@@ -191,10 +198,10 @@ function Quiz( { settings, signIn }) {
                 present: [
                     stem + 'n',
                     stem + 't', 
-                    stem + stem.slice(-1),
+                    verb !== 'olla' ? stem + stem.slice(-1): 'on', //Irregular olla 
                     stem + 'mme',
                     stem + 'tte',
-                    stem + 'v' + a + 't'
+                    verb !== 'olla' ? stem + 'v' + a + 't': 'ovat'
                     ],
                 past: [
                     past + 'n',
@@ -352,13 +359,15 @@ function Quiz( { settings, signIn }) {
         return (begin + text + end); 
     }
 
-    const upResp = async(e) => {
+    const upResp = (e) => {
         let val = e.target.value; 
         let index = e.target.dataset.index; 
-        let tmp = resp.filter(f => true);
+        let tmp = resp.filter(q => {return true});
+        console.log(tmp)
+        console.log('index: ' + index + " value: " + val); 
         tmp[index] = val; 
-        await setResp(tmp); 
-        console.log(resp); 
+        console.log(tmp); 
+        setResp(tmp); 
     }
 
     const upVQuiz = () => {
@@ -397,12 +406,12 @@ function Quiz( { settings, signIn }) {
         if (pass) {
             quiz.push(conj.pass_present); 
             quiz.push(conj.pass_past);
-            quiz.push(conj.pass_present); 
+            quiz.push(conj.pass_conditional); 
         }
         else {
             quiz.push(null); quiz.push(null); quiz.push(null);
         }
-        if (part) {
+        if (part) { //FLAG
             quiz.push(conj.part_pass_past); 
             quiz.push(conj.part_pass_act);
             quiz.push(conj.part_past);
@@ -416,7 +425,7 @@ function Quiz( { settings, signIn }) {
         setVQuiz(quiz.map((value, index) => {
             return (
                 (value ? (
-                <div key={value}>
+                <div key={index}>
                     {present && index === 0 ? <h1>Present tense</h1> : ''}
                     {past && index === 6 ? <h2>Past tense</h2>: ''}
                     {cond && index === 12 ? <h2>Conditional</h2>: ''}
@@ -425,13 +434,19 @@ function Quiz( { settings, signIn }) {
                         <div>
                             <span>{desc[index % 6]}</span>
                             <input data-index={index} onChange={upResp}></input>
-                            <span className='hidden'>{value}</span>
+                            <span className={['hidden',(resp[index] === value ? 'correct':'wrong')].join(' ')}>{value}</span>
                         </div> : " " }
                     {index >= 18 ? 
                         <div>
                             {pass && index === 18 ? <h2>Passives</h2>: ''}
                             {part && index === 21 ? <h2>Participles</h2>: ''}
-                            {index }
+                            {pass ? 
+                                <div>
+                                    <span>{desc[index-12]}</span>
+                                    <input data-index={index} onChange={upResp}></input>
+                                    <span className={['hidden', (resp[index] === value ? 'correct':'wrong')].join(' ')}>{value}</span>
+                                </div> : " " }
+
                         </div> : ''}
                 </div>) 
                 : <div>
@@ -444,6 +459,10 @@ function Quiz( { settings, signIn }) {
         }));  
     }
 
+    const submitResp = () => {
+
+    }
+
     return(
         <div>
             <button onClick={() => alert(randomVerb())} type="button">Random verb</button>
@@ -453,21 +472,7 @@ function Quiz( { settings, signIn }) {
             <button onClick={() => console.log(resp)}>Log response</button>
             <button onClick={() => console.log(key)}>Log key</button>
             {vQuiz}
-                {verbs ?
-                    <table>
-                        {verbs.A.map(verb => {
-                                return (
-                                    <tr>
-                                        <td>{verb}</td>
-                                    </tr>
-                                )
-                            })}
-                    </table>
-                : 
-                <div>
-                    "No verbs found"
-                </div>
-                }
+            <button onClick={submitResp}>Submit</button>
         </div>
     )
 }
