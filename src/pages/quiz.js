@@ -4,15 +4,9 @@ const verbs = require("../verbs.json");
 
 function Quiz( { settings, signIn }) {
     const [conj, setConj] = useState({
-        present: [
-
-        ],
-        past: [
-
-        ],
-        conditional: [
-
-        ],
+        present: [],
+        past: [],
+        conditional: [],
         pass_present: '',
         pass_past: '',
         pass_conditional: '',
@@ -24,13 +18,13 @@ function Quiz( { settings, signIn }) {
     const [v, setV] = useState('')
     const [vQuiz, setVQuiz] = useState(); 
     const [key,setKey] = useState(); 
-    const [resp,setResp] = useState(Array(25).fill(null));
+    const [resp,setResp] = useState(Array(25).fill(''));//FLAG
     const [hidden, setHidden] = useState(true); 
     let navigate = useNavigate()
 
     useEffect(() => {
         if(!Array.isArray(settings)) {
-            navigate('/'); 
+            navigate('/',{state: 'quiz'}); 
         }
     },[])
 
@@ -402,7 +396,7 @@ function Quiz( { settings, signIn }) {
                 quiz.push(conj.present[i]);
             }
             else {
-                quiz.push(null); 
+                quiz.push(''); //FLAG
             }
         }
         for (let i = 0; i < conj.past.length; i++) {
@@ -410,7 +404,7 @@ function Quiz( { settings, signIn }) {
                 quiz.push(conj.past[i]);
             }
             else {
-                quiz.push(null); 
+                quiz.push(''); //FLAG
             }
         }
         for (let i = 0; i < conj.conditional.length; i++) {
@@ -418,7 +412,7 @@ function Quiz( { settings, signIn }) {
                 quiz.push(conj.conditional[i]);
             }
             else {
-                quiz.push(null); 
+                quiz.push(''); //FLAG
             }
         }
         if (pass) {
@@ -427,7 +421,7 @@ function Quiz( { settings, signIn }) {
             quiz.push(conj.pass_conditional); 
         }
         else {
-            quiz.push(null); quiz.push(null); quiz.push(null);
+            quiz.push(''); quiz.push(''); quiz.push(''); //FLAG
         }
         if (part) { //FLAG
             quiz.push(conj.part_pass_past); 
@@ -436,7 +430,7 @@ function Quiz( { settings, signIn }) {
             quiz.push(conj.part_act); 
         }
         else {
-            quiz.push(null); quiz.push(null); quiz.push(null); quiz.push(null);
+            quiz.push(''); quiz.push(''); quiz.push(''); quiz.push('');//FLAG
         }
         setKey(quiz); 
         console.log(quiz);  
@@ -452,7 +446,7 @@ function Quiz( { settings, signIn }) {
                         <div>
                             <span>{desc[index % 6]}</span>
                             <input data-index={index} onChange={upResp} value={resp[index]}></input>
-                            <span className={[(hidden ? 'hidden': ''),(resp[index] === value ? 'correct':'wrong')].join(' ')}>{value}</span>
+                            <span className={[(hidden ? 'hidden': ''),(resp[index].toLowerCase() === value ? 'correct':'wrong')].join(' ')}>{value}</span>
                         </div> : " " }
                     {index >= 18 ? 
                         <div>
@@ -462,7 +456,7 @@ function Quiz( { settings, signIn }) {
                                 <div>
                                     <span>{desc[index-12]}</span>
                                     <input data-index={index} onChange={upResp} value={resp[index]}></input>
-                                    <span className={[(hidden ? 'hidden': ''), (resp[index] === value ? 'correct':'wrong')].join(' ')}>{value}</span>
+                                    <span className={[(hidden ? 'hidden': ''), (resp[index].toLowerCase() === value ? 'correct':'wrong')].join(' ')}>{value}</span>
                                 </div> : " " }
 
                         </div> : ''}
@@ -490,9 +484,7 @@ function Quiz( { settings, signIn }) {
     }
 
     return(
-        <div>
-            <button onClick={() => alert(randomVerb())} type="button">Random verb</button>
-            <button onClick={parseVerb} type="button">Parse Verb</button>   
+        <div className="main">
             <input placeholder="tense" defaultValue="" onChange={e => parseVerb(e.target.value)}></input>
             <button onClick={() => console.log(conj)}>Log conjugations</button>
             <button onClick={() => console.log(resp)}>Log response</button>

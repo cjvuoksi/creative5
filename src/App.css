@@ -37,6 +37,32 @@
   }
 }
 
+/* Overall and Navbar */
+.navBar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  min-height: 2em;
+  padding: .5em;
+  background-color: #f8f8f8;
+  border: 1px solid #e7e7e7; 
+}
+
+.main {
+  min-height: 80vh;
+}
+
+.icon {
+  width: 5em; 
+  border-radius: .2em;
+  filter: opacity(.9);
+}
+
+.icon:hover {
+  filter: none; 
+}
+
+/* Quiz */
 
 .correct {
   color: green; 
@@ -49,3 +75,43 @@
 .hidden {
   display: none; 
 }
+
+/* Landing Page */
+.landing {
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+}
+.landing-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em; 
+}
+
+.landing-link {
+  background-color: #337ab7;
+  padding: 1em;
+  font-size: 1em;
+  font-weight: bold;
+  border-radius: .2em;
+  text-align: center;
+  text-decoration: none;
+}
+
+.landing-link:hover {
+  background-color: #286090;
+}
+
+.landing-link a {
+  color:aliceblue !important; 
+}
+
+a {
+  text-decoration: none;
+  color: #777777; 
+}
+
+a:hover {
+  color: #333; 
+}
+

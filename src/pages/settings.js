@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 function Settings( {settings, signIn, setCookie } ) {
     const [list,setList] = useState(); 
-    const [pref,setPref] = useState([true,true,true,true,true,true,true,true,true,true,true]); 
+    const [pref,setPref] = useState([true,true,true,true,true,true,true,true,true,true,true]);
+    const [edits,setEdits] = useState(true); 
     let navigate = useNavigate(); 
 
     useEffect(() => {
@@ -12,7 +13,7 @@ function Settings( {settings, signIn, setCookie } ) {
             upList(); 
         }
         else {
-            navigate("/"); 
+            navigate("/",{state: "settings"}); 
         }
     }, []); 
 
@@ -41,10 +42,12 @@ function Settings( {settings, signIn, setCookie } ) {
             i[Object.keys(i)[0]] = pref[index]; 
         }
         setCookie(['1s','2s','3s','1p','2p','3p','present','past','cond','pass','part'], pref); 
-        signIn(); 
+        signIn();  
+        setEdits(true); 
     }
 
     const upPref = (e) => {
+        setEdits(false); 
         let index = parseInt(e.target.dataset.index,10);
         let tmp = pref.filter(f => true); 
         tmp[index] = !pref[index]; 
@@ -66,9 +69,9 @@ function Settings( {settings, signIn, setCookie } ) {
         }
 
     return (
-        <div>
+        <div className="main">
             {list}
-            <button onClick={upSet}>Save</button>
+            <button onClick={upSet} disabled={edits}>Save</button>
         </div>
     )
 
