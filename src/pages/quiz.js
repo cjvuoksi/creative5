@@ -48,7 +48,11 @@ function Quiz( { settings, signIn }) {
         "ks": "ks",
         "sk": "sk",
         "st": "st",
+        "tr": "tr",
         "tk": "tk",
+        "kl": "kl",
+        "pl": "pl",
+        "tg": "tg",
         "pp": "p",
         "tt": "t",
         "kk": "k",
@@ -154,9 +158,17 @@ function Quiz( { settings, signIn }) {
             let past = (soft.slice(-1) === a || soft.slice(-1) === 'e' || soft.slice(-1) === 'i') ? soft.slice(0,-1) : soft;
             let condS = (soft.slice(-1) === 'e' || soft.slice(-1) === 'i') ? stem.slice(0,-1) : stem; 
             let pastS = (condS.slice(-1) === a ? condS.slice(0,-1) : condS); 
-            if (past.slice(-4).search('rr') && two === a + a) {
-                past = past.replace('rr', 'rs'); 
-                pastS = pastS.replace('rt', 'rs')
+            if ((past.slice(-4).search('rr') || past.slice(-4).search('ll') || past.slice(-4).search('nn')) && two === a + a) {
+                past = past.slice(0,-4) + past.slice(-4).replace('rr', 'rs'); 
+                pastS = pastS.slice(0,-4) + pastS.slice(-4).replace('rt', 'rs'); 
+                past = past.slice(0,-4) + past.slice(-4).replace('ll', 'ls'); 
+                pastS = pastS.slice(0,-4) + pastS.slice(-4).replace('lt', 'ls'); 
+                past = past.slice(0,-4) + past.slice(-4).replace('nn', 'ns'); 
+                pastS = pastS.slice(0,-4) + pastS.slice(-4).replace('nt', 'ns'); 
+            }
+            if (three === 'k'+a+a || three === 'p'+a+a) {
+                past = past + (a === 'a'? 'o':'ö'); 
+                pastS = pastS + (a === 'a'? 'o':'ö'); 
             }
             setConj({
                 present: [
@@ -482,13 +494,15 @@ function Quiz( { settings, signIn }) {
     }
 
     //DEBUG BUTTONS
-    // <button onClick={() => console.log(conj)}>Log conjugations</button>
+    // 
     // <button onClick={() => console.log(resp)}>Log response</button>
     // <button onClick={() => console.log(key)}>Log key</button>
-    // <input placeholder="tense" defaultValue="" onChange={e => parseVerb(e.target.value)}></input>
+    // 
 
     return(
         <div className="main">
+            <input placeholder="tense" defaultValue="" onChange={e => parseVerb(e.target.value)}></input>
+            <button onClick={() => console.log(conj)}>Log conjugations</button>
             <h1>{v}</h1>
             {vQuiz}
             <button onClick={hidden ? submitResp : nextVerb}>Submit</button>
