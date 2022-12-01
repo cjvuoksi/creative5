@@ -1,5 +1,5 @@
-import { lastIndexOf, replace } from 'lodash';
 import { useEffect, useState } from 'react'; 
+import { useNavigate } from 'react-router-dom';
 const verbs = require("../verbs.json");
 
 function Quiz( { settings, signIn }) {
@@ -24,20 +24,36 @@ function Quiz( { settings, signIn }) {
     const [v, setV] = useState('')
     const [vQuiz, setVQuiz] = useState(); 
     const [key,setKey] = useState(); 
-    let empty = Array(25).fill(null)
-    const [resp,setResp] = useState(empty); 
+    const [resp,setResp] = useState(Array(25).fill(null));
+    const [hidden, setHidden] = useState(true); 
+    let navigate = useNavigate()
+
+    useEffect(() => {
+        if(!Array.isArray(settings)) {
+            navigate('/'); 
+        }
+    },[])
 
     useEffect(() => {
         if(Array.isArray(settings)) {upVQuiz();}
         else {signIn();} 
     }, [conj]); 
 
+    
+
+    useEffect(() => {
+        if(Array.isArray(settings)) {
+            parseVerb(randomVerb()); 
+        }
+    },[]);
+
     useEffect(() => {
         if(Array.isArray(settings)) upVQuiz(); 
-    },[resp])
+    },[resp,hidden])
 
     const aste = {
         "ks": "ks",
+        "sk": "sk",
         "st": "st",
         "tk": "tk",
         "pp": "p",
@@ -77,9 +93,9 @@ function Quiz( { settings, signIn }) {
         return flat[Math.floor(Math.random() * flat.length)];
     }
 
-    const parseVerb = () => {
-        let verb = v; 
+    const parseVerb = (verb) => { 
         console.log(verb); 
+        setV(verb); 
         let three = verb.slice(-3); 
         let two = verb.slice(-2); 
         if (two === "da" || two === 'dä') { //Irregular nähdä käydä juoda syödä lyödä tuoda luoda suoda
@@ -143,9 +159,9 @@ function Quiz( { settings, signIn }) {
             let a = verb.slice(-1); 
             let soft = soften(stem); 
             let past = (soft.slice(-1) === a || soft.slice(-1) === 'e' || soft.slice(-1) === 'i') ? soft.slice(0,-1) : soft;
-            let condS = (soft.slice(-1) === a || soft.slice(-1) === 'e' || soft.slice(-1) === 'i') ? stem.slice(0,-1) : stem; 
-            let pastS = condS; 
-            if (past.slice(-4).search('rr')) {
+            let condS = (soft.slice(-1) === 'e' || soft.slice(-1) === 'i') ? stem.slice(0,-1) : stem; 
+            let pastS = (condS.slice(-1) === a ? condS.slice(0,-1) : condS); 
+            if (past.slice(-4).search('rr') && two === a + a) {
                 past = past.replace('rr', 'rs'); 
                 pastS = pastS.replace('rt', 'rs')
             }
@@ -349,9 +365,11 @@ function Quiz( { settings, signIn }) {
                 vaihtelu = false; 
             }
             for (let j of Object.keys(aste)) {
-                if (vaihtelu && text.search(aste[j]) >= 0 && aste[j] && text.search(j) < 0) {
-                    console.log(j); 
-                    text = text.replace(aste[j], j);
+                if (vaihtelu && text.search(aste[j]) >= 0 && aste[j]) {
+                    if (text.search(j) < 0) {
+                        console.log(j); 
+                        text = text.replace(aste[j], j);
+                    }
                     vaihtelu = false; 
                 }
             }
@@ -433,8 +451,8 @@ function Quiz( { settings, signIn }) {
                     {index / 3 < 6 ? 
                         <div>
                             <span>{desc[index % 6]}</span>
-                            <input data-index={index} onChange={upResp}></input>
-                            <span className={['hidden',(resp[index] === value ? 'correct':'wrong')].join(' ')}>{value}</span>
+                            <input data-index={index} onChange={upResp} value={resp[index]}></input>
+                            <span className={[(hidden ? 'hidden': ''),(resp[index] === value ? 'correct':'wrong')].join(' ')}>{value}</span>
                         </div> : " " }
                     {index >= 18 ? 
                         <div>
@@ -443,8 +461,8 @@ function Quiz( { settings, signIn }) {
                             {pass ? 
                                 <div>
                                     <span>{desc[index-12]}</span>
-                                    <input data-index={index} onChange={upResp}></input>
-                                    <span className={['hidden', (resp[index] === value ? 'correct':'wrong')].join(' ')}>{value}</span>
+                                    <input data-index={index} onChange={upResp} value={resp[index]}></input>
+                                    <span className={[(hidden ? 'hidden': ''), (resp[index] === value ? 'correct':'wrong')].join(' ')}>{value}</span>
                                 </div> : " " }
 
                         </div> : ''}
@@ -459,20 +477,30 @@ function Quiz( { settings, signIn }) {
         }));  
     }
 
-    const submitResp = () => {
+    const nextVerb = async(e) => {
+        e.target.innerHTML = "Submit"; 
+        setResp(Array(25).fill('')); 
+        setHidden(true); 
+        parseVerb(randomVerb()); 
+    }
 
+    const submitResp = (e) => {
+        e.target.innerHTML = "Next"; 
+        setHidden(false)
     }
 
     return(
         <div>
             <button onClick={() => alert(randomVerb())} type="button">Random verb</button>
             <button onClick={parseVerb} type="button">Parse Verb</button>   
-            <input placeholder="tense" defaultValue="" onChange={e => setV(e.target.value)}></input>
+            <input placeholder="tense" defaultValue="" onChange={e => parseVerb(e.target.value)}></input>
             <button onClick={() => console.log(conj)}>Log conjugations</button>
             <button onClick={() => console.log(resp)}>Log response</button>
             <button onClick={() => console.log(key)}>Log key</button>
+
+            <h1>{v}</h1>
             {vQuiz}
-            <button onClick={submitResp}>Submit</button>
+            <button onClick={hidden ? submitResp : nextVerb}>Submit</button>
         </div>
     )
 }

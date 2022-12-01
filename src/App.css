@@ -45,3 +45,7 @@
 .wrong {
   color: red; 
 }
+
+.hidden {
+  display: none; 
+}

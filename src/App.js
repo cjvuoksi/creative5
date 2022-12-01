@@ -68,13 +68,14 @@ function App() {
   return (
     <Router>
       <nav className="navBar">
-        <NavLink to="/">Quiz</NavLink>
+        <NavLink to="/quiz">Quiz</NavLink>
         <NavLink to="/settings">Settings</NavLink>
         <NavLink to="/about">About</NavLink>
         <button onClick={() => {console.log(settings)}}>Log</button>
       </nav>
       <Routes>
-        <Route path="/" element={<Quiz settings={settings} signIn={signIn}/>}/>        
+        <Route path="/" element={<About />}></Route>
+        <Route path="/quiz" element={<Quiz settings={settings} signIn={signIn}/>}/>        
         <Route path="/settings" element={<Settings settings={settings} setSettings={setSettings} signIn={signIn} setCookie={setCookie}/>}></Route>
         <Route path="/about" element={<About/>}></Route>
         <Route path="*" element={<None/> }></Route>

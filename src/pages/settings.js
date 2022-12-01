@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'; 
 import { useNavigate } from "react-router-dom"; 
 
-function Settings( {settings, setSettings, signIn, setCookie } ) {
+function Settings( {settings, signIn, setCookie } ) {
     const [list,setList] = useState(); 
-    const [pref,setPref] = useState([true,true,true,true,true,true,true,true,true,true]); 
+    const [pref,setPref] = useState([true,true,true,true,true,true,true,true,true,true,true]); 
     let navigate = useNavigate(); 
 
     useEffect(() => {
@@ -40,7 +40,7 @@ function Settings( {settings, setSettings, signIn, setCookie } ) {
             console.log("Object keys: " + Object.keys(i)[0]); 
             i[Object.keys(i)[0]] = pref[index]; 
         }
-        setCookie(['1s','2s','3s','1p','2p','3p','present','past','pass','part'], pref); 
+        setCookie(['1s','2s','3s','1p','2p','3p','present','past','cond','pass','part'], pref); 
         signIn(); 
     }
 
