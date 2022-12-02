@@ -82,7 +82,7 @@ function App() {
         <Route path="/about" element={<About/>}></Route>
         <Route path="*" element={<None/> }></Route>
       </Routes>
-      <div>
+      <div className="footer">
         <a href="https://github.com/cjvuoksi/creative5">github repo</a>
       </div>
     </Router>

@@ -86,7 +86,7 @@ function Quiz( { settings, signIn }) {
         'aurat','grillat','harat','huorat','jiirat','ignoorat','jonglöörat','jorat','kairat','klaarat','kurat','luirat','luurat','muurat','naarat','parat','erit', 'vallit', 'karvat'
     ]
 
-    const desc = ['minä','sinä','hän','me','te','he','present','past','conditional','past passive','present passive','past active','present active']; 
+    const desc = ['minä','sinä','hän','me','te','he','Present','Past','Conditional','Past passive','Present passive','Past active','Present active']; 
 
     const randomVerb = () => {
         let flat = []; 
@@ -475,9 +475,11 @@ function Quiz( { settings, signIn }) {
                             {part && index === 21 ? <h2>Participles</h2>: ''}
                             {pass ? 
                                 <div className="quizIn">
-                                    <span>{desc[index-12]}</span>
-                                    <input data-index={index} onChange={upResp} value={resp[index]}></input>
-                                    <span className={[(hidden ? 'hidden': ''), (resp[index].toLowerCase() === value ? 'correct':'wrong')].join(' ')}>{value}</span>
+                                    <p className="quiz-desc">{desc[index-12]}</p>
+                                    <div className="setting-text">
+                                        <input data-index={index} onChange={upResp} value={resp[index]}></input>
+                                    </div>
+                                    <p className={[(hidden ? 'hidden': ''), (resp[index].toLowerCase() === value ? 'correct':'wrong')].join(' ')}>{value}</p>
                                 </div> : " " }
 
                         </div> : ''}
@@ -508,13 +510,12 @@ function Quiz( { settings, signIn }) {
     // 
     // <button onClick={() => console.log(resp)}>Log response</button>
     // <button onClick={() => console.log(key)}>Log key</button>
-    // 
+    // <input placeholder="tense" defaultValue="" onChange={e => parseVerb(e.target.value)}></input>
+    // <button onClick={() => {console.log(conj);console.log(resp)}}>Log conjugations</button>
 
     return(
         <div className="main">
-            <input placeholder="tense" defaultValue="" onChange={e => parseVerb(e.target.value)}></input>
-            <button onClick={() => {console.log(conj);console.log(resp)}}>Log conjugations</button>
-            <h1>{v}</h1>
+            <h1>{v.toUpperCase()[0] + v.slice(1)}</h1>
             <div className="quizContainer">
                 {vQuiz}
             </div>
