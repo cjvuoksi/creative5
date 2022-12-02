@@ -6,7 +6,9 @@ function Settings( {settings, signIn, setCookie } ) {
     const [pref,setPref] = useState([true,true,true,true,true,true,true,true,true,true,true]);
     const [edits,setEdits] = useState(true); 
     let navigate = useNavigate(); 
-
+    const titles = {"1s":"1st person singular","2s":"2nd person singular","3s":"3rd person singular",
+                    "1p":"1st person plural","2p":"2nd person plural","3p":"3rd person plural",
+                    "present":"Present","past":"Past","conditional":"Conditional","passives":"Passives","participles":"Participles"}; 
     useEffect(() => {
         if (settings[0]) {
             getPref(); 
@@ -59,8 +61,8 @@ function Settings( {settings, signIn, setCookie } ) {
                 console.log(item); 
                 let value = Object.keys(item)[0]
                 return(
-                    <div key={value}>
-                        <span>{value}</span>
+                    <div key={value} className="setting">
+                        <p className="setting-text">{titles[value]}</p>
                         <input type="checkbox" data-index={index} checked={pref[index]} onChange={upPref}></input>
                     </div>
                 )
@@ -70,7 +72,11 @@ function Settings( {settings, signIn, setCookie } ) {
 
     return (
         <div className="main">
-            {list}
+            <h1>Configure quiz</h1>
+            <p><i>Check the boxes for tenses, moods, and conjugations you want to study</i></p>
+            <div className="settings">
+                {list}
+            </div>
             <button onClick={upSet} disabled={edits}>Save</button>
         </div>
     )

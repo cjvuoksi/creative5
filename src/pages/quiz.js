@@ -52,9 +52,15 @@ function Quiz( { settings, signIn }) {
         "tk": "tk",
         "kl": "kl",
         "pl": "pl",
+        "rh": "rh",
         "tg": "tg",
+        "rm": "rm",
+        "rg": "rg",
+        "rj": "rj",
+        "kr": "kr",
         "pp": "p",
         "tt": "t",
+        "hk": "hj",
         "kk": "k",
         "mp": "mm",
         "nt": "nn",
@@ -66,7 +72,6 @@ function Quiz( { settings, signIn }) {
         "rt": "rr",
         "rk": "r",
         "ht": "hd",
-        "hk": "h",
         "p": "v",
         "t": "d",
         "k": ''
@@ -76,8 +81,9 @@ function Quiz( { settings, signIn }) {
         'erit','hirvit','hävit','levit','lämmit','katket','selvit' ,'siit' ,'virit' ,'haljet','iljet','hävet','kiivet','revet','ruvet','langet','kasket','korvet','lohjet','noet','poiket','puhjet','ratket','juljet','kammet','kanget','keret','kerjet','heret','herjet','hirvet','kivet','livet','nimet','piet','ristet','änget'
     ]
     
-    const typeLaho = [ //Lahota irregulars
-        'lahot','hävit','selvit','virit','hirvit','kasket','kovet','pahet','plärät','suuret', 'vahvet', 'hiljet', 'himmet', 'hirvet','kevet','levet','lievet','lähet','pehmet','selvet','syvet', 'vähet'
+    const typeLaho = [ //Lahota irregulars eerata
+        'lahot','hävit','selvit','virit','hirvit','kasket','kovet','pahet','plärät','suuret', 'vahvet', 'hiljet', 'himmet', 'hirvet','kevet','levet','lievet','lähet','pehmet','selvet','syvet', 'vähet','huorat','aploodeerat',
+        'aurat','grillat','harat','huorat','jiirat','ignoorat','jonglöörat','jorat','kairat','klaarat','kurat','luirat','luurat','muurat','naarat','parat','erit', 'vallit', 'karvat'
     ]
 
     const desc = ['minä','sinä','hän','me','te','he','present','past','conditional','past passive','present passive','past active','present active']; 
@@ -166,7 +172,11 @@ function Quiz( { settings, signIn }) {
                 past = past.slice(0,-4) + past.slice(-4).replace('nn', 'ns'); 
                 pastS = pastS.slice(0,-4) + pastS.slice(-4).replace('nt', 'ns'); 
             }
-            if (three === 'k'+a+a || three === 'p'+a+a) {
+            if (three === 'kaa' || three === 'paa' || three === 'vaa' || three === 'laa' || verb === "antaa" || verb === "kantaa") {
+                if (verb === "antaa" || verb === "kantaa") {
+                    past = past.replace('ns','nn'); 
+                    pastS = pastS.replace('ns','nt'); 
+                } 
                 past = past + (a === 'a'? 'o':'ö'); 
                 pastS = pastS + (a === 'a'? 'o':'ö'); 
             }
@@ -257,7 +267,7 @@ function Quiz( { settings, signIn }) {
             let stem = verb.slice(0,-2); 
             let past = ''; 
             let cond = ''; 
-            if (typeLaho.indexOf(soft) >= 0) {
+            if (typeLaho.indexOf(soft) >= 0 || soft.search("eerat") >= 0) {
                 stem = soft.slice(0,-1); 
             }
             if (typeSelvi.indexOf(soft) >= 0) {
@@ -265,17 +275,17 @@ function Quiz( { settings, signIn }) {
                 cond = stem + a +'i'; 
                 stem += a; 
             } 
-            else if (three[0] === 'e') {
+            else if (three[0] === 'e' || stem === 'para') {
                 past = stem + 'ni';
                 cond = past; 
                 stem += 'ne'; 
             }
             else if (three[0] === 'i') {
-                stem += 'itse'; 
+                stem += 'tse'; 
                 past = stem.slice(0,-1) + 'i'; 
                 cond = past; 
             }
-            else if (three[0] === 'a') {
+            else if (three[0] === a) {
                 past = stem + 'si'; 
                 cond = stem + 'i'; 
                 stem += a; 
@@ -446,36 +456,37 @@ function Quiz( { settings, signIn }) {
         console.log(quiz);  
         setVQuiz(quiz.map((value, index) => {
             return (
-                (value ? (
-                <div key={index}>
+                (value ? 
+                <div key={index} className="quizBlock">
                     {present && index === 0 ? <h2>Present tense</h2> : ''}
                     {past && index === 6 ? <h2>Past tense</h2>: ''}
                     {cond && index === 12 ? <h2>Conditional</h2>: ''}
-                    {pass && index === 18 ? <h2>Passives</h2>: ''}
                     {index / 3 < 6 ? 
-                        <div>
-                            <span>{desc[index % 6]}</span>
-                            <input data-index={index} onChange={upResp} value={resp[index]}></input>
-                            <span className={[(hidden ? 'hidden': ''),(resp[index].toLowerCase() === value ? 'correct':'wrong')].join(' ')}>{value}</span>
+                        <div className="quizIn">
+                            <p className="quiz-desc">{desc[index % 6]}</p>
+                            <div className="setting-text">
+                                <input data-index={index} onChange={upResp} value={resp[index]}></input>
+                            </div>
+                            <p className={[(hidden ? 'hidden': ''),(resp[index].toLowerCase() === value ? 'correct':'wrong')].join(' ')}>{value}</p>
                         </div> : " " }
                     {index >= 18 ? 
                         <div>
                             {pass && index === 18 ? <h2>Passives</h2>: ''}
                             {part && index === 21 ? <h2>Participles</h2>: ''}
                             {pass ? 
-                                <div>
+                                <div className="quizIn">
                                     <span>{desc[index-12]}</span>
                                     <input data-index={index} onChange={upResp} value={resp[index]}></input>
                                     <span className={[(hidden ? 'hidden': ''), (resp[index].toLowerCase() === value ? 'correct':'wrong')].join(' ')}>{value}</span>
                                 </div> : " " }
 
                         </div> : ''}
-                </div>) 
+                </div>
                 : <div>
                     {present && index === 0 ? <h1>Present tense</h1> : ''}
                     {past && index === 6 ? <h2>Past tense</h2>: ''}
                     {cond && index === 12 ? <h2>Conditional</h2>: ''}
-                    {pass && index === 18 ? <h2>Passives</h2>: ''}
+                    {(pass && index === 18) ? <h2>Passives</h2>: ''}
                 </div>)
             )
         }));  
@@ -502,9 +513,11 @@ function Quiz( { settings, signIn }) {
     return(
         <div className="main">
             <input placeholder="tense" defaultValue="" onChange={e => parseVerb(e.target.value)}></input>
-            <button onClick={() => console.log(conj)}>Log conjugations</button>
+            <button onClick={() => {console.log(conj);console.log(resp)}}>Log conjugations</button>
             <h1>{v}</h1>
-            {vQuiz}
+            <div className="quizContainer">
+                {vQuiz}
+            </div>
             <button onClick={hidden ? submitResp : nextVerb}>Submit</button>
         </div>
     )

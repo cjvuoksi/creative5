@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
 }
@@ -49,7 +55,11 @@
 }
 
 .main {
-  min-height: 80vh;
+  min-height: 90vh;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1em; 
 }
 
 .icon {
@@ -66,14 +76,74 @@
 
 .correct {
   color: green; 
+  display: flex;
+  justify-content: flex-start;
 }
 
 .wrong {
   color: red; 
+  display: flex;
+  justify-content: flex-start;
 }
 
 .hidden {
   display: none; 
+}
+
+.quizIn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 1em 0em; 
+  gap: .2em; 
+  text-align: center;
+}
+
+.quizBlock {
+  display: block;
+}
+
+.quizContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.quiz-desc {
+  display: flex; 
+  justify-content: flex-end;
+}
+
+@media only screen and (min-width: 600px) {
+  .quizContainer {
+    display: grid;
+    gap: 1em; 
+  }
+  
+  .quizIn {
+    display: grid;
+    grid-template-columns: 1fr 205px 1fr;
+    grid-template-rows: 1.4em;
+    justify-content: center;
+    align-items: center; 
+    align-content: center;
+    gap: .2em; 
+  }
+}
+
+
+
+/* Settings */
+
+.setting {
+  padding: 2px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+}
+
+.setting-text {
+  display: flex;
+  justify-content: center;
 }
 
 /* Landing Page */
@@ -102,9 +172,16 @@
   background-color: #286090;
 }
 
-.landing-link a {
+.landing-link {
   color:aliceblue !important; 
 }
+
+.landing-link:active {
+  background-color: #3a8bd1;
+}
+
+
+/* General */
 
 a {
   text-decoration: none;
@@ -115,3 +192,45 @@ a:hover {
   color: #333; 
 }
 
+input {
+  text-align: center;
+  align-self: center; 
+  transition: all .5s; 
+  border: none; 
+  max-width: 175px; 
+  border-radius: 1em;
+  padding: .2em;
+}
+
+input:focus {
+  max-width: 205px !important; 
+}
+
+input:hover {
+  border: 1px solid #777777; 
+  max-width: 175px; 
+}
+
+button {
+  background-color: #337ab7;
+  border-radius: 0.2em;
+  text-align: center;
+  padding: .7em;
+  color: aliceblue; 
+  border: none; 
+}
+
+button:hover {
+  background-color: #286090;
+}
+
+button:active {
+  background-color: #3a8bd1;
+}
+
+
+button:disabled {
+  background-color: #f8f8f8;
+  border: 1px solid #e7e7e7;
+  color: #777777;
+}

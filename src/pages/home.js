@@ -16,12 +16,8 @@ function Home() {
     return(
         <div className="landing main">
             <div className="landing-body">
-            <div className="landing-link">
-                <Link to="/quiz">Start practicing</Link>
-            </div>
-            <div className="landing-link">
-                <Link to="/settings">Configure practice</Link>   
-            </div>
+            <Link to="/quiz" className="landing-link">Start practicing</Link>
+            <Link to="/settings" className="landing-link">Configure practice</Link>   
             </div>
             <a href="https://en.wikipedia.org/wiki/Finnish_verb_conjugation" target="_blank">Learn conjugations</a>
             <a href="https://kaino.kotus.fi/visk/sisallys.php?p=105" target="_blank">Opi taivutuksia suomeksi</a>
