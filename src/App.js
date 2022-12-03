@@ -70,7 +70,7 @@ function App() {
   return (
     <Router>
       <nav className="navBar">
-        <NavLink to="/"><img className="icon" src={icon}></img></NavLink>
+        <NavLink to="/" className="icon-container"><img className="icon" src={icon}></img></NavLink>
         <NavLink to="/quiz">Quiz</NavLink>
         <NavLink to="/settings">Settings</NavLink>
         <NavLink to="/about">About</NavLink>

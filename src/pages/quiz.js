@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'; 
+import { Fragment, useEffect, useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 const verbs = require("../verbs.json");
 
@@ -456,40 +456,41 @@ function Quiz( { settings, signIn }) {
         console.log(quiz);  
         setVQuiz(quiz.map((value, index) => {
             return (
-                (value ? 
-                <div key={index} className="quizBlock">
+                <Fragment key={index}>
                     {present && index === 0 ? <h2>Present tense</h2> : ''}
                     {past && index === 6 ? <h2>Past tense</h2>: ''}
                     {cond && index === 12 ? <h2>Conditional</h2>: ''}
-                    {index / 3 < 6 ? 
+                    {index / 3 < 6 && value ? 
                         <div className="quizIn">
                             <p className="quiz-desc">{desc[index % 6]}</p>
                             <div className="setting-text">
                                 <input data-index={index} onChange={upResp} value={resp[index]}></input>
                             </div>
-                            <p className={[(hidden ? 'hidden': ''),(resp[index].toLowerCase() === value ? 'correct':'wrong')].join(' ')}>{value}</p>
-                        </div> : " " }
+                            <p className={[(hidden ? 'hidden': ''),(resp[index].toLowerCase() === value ? 'correct':'wrong'),"setting-text"].join(' ')}>{value}</p>
+                        </div> : '' }
                     {index >= 18 ? 
-                        <div>
+                        <Fragment>
                             {pass && index === 18 ? <h2>Passives</h2>: ''}
                             {part && index === 21 ? <h2>Participles</h2>: ''}
-                            {pass ? 
+                            {(pass && value && index >= 18 && index < 21) ? 
                                 <div className="quizIn">
                                     <p className="quiz-desc">{desc[index-12]}</p>
                                     <div className="setting-text">
                                         <input data-index={index} onChange={upResp} value={resp[index]}></input>
                                     </div>
-                                    <p className={[(hidden ? 'hidden': ''), (resp[index].toLowerCase() === value ? 'correct':'wrong')].join(' ')}>{value}</p>
+                                    <p className={[(hidden ? 'hidden': ''), (resp[index].toLowerCase() === value ? 'correct':'wrong'),"setting-text"].join(' ')}>{value}</p>
                                 </div> : " " }
+                            {(part && value && index >=21) ? 
+                            <div className="quizIn">
+                                <p className="quiz-desc">{desc[index-12]}</p>
+                                <div className="setting-text">
+                                    <input data-index={index} onChange={upResp} value={resp[index]}></input>
+                                </div>
+                                <p className={[(hidden ? 'hidden': ''), (resp[index].toLowerCase() === value ? 'correct':'wrong'),"setting-text"].join(' ')}>{value}</p>
+                            </div> : " " }
 
-                        </div> : ''}
-                </div>
-                : <div>
-                    {present && index === 0 ? <h1>Present tense</h1> : ''}
-                    {past && index === 6 ? <h2>Past tense</h2>: ''}
-                    {cond && index === 12 ? <h2>Conditional</h2>: ''}
-                    {(pass && index === 18) ? <h2>Passives</h2>: ''}
-                </div>)
+                        </Fragment> : ''}
+                </Fragment>
             )
         }));  
     }
@@ -515,7 +516,7 @@ function Quiz( { settings, signIn }) {
 
     return(
         <div className="main">
-            <h1>{v.toUpperCase()[0] + v.slice(1)}</h1>
+            <a className="verb" href={"https://translate.google.com/?sl=fi&tl=en&text=" + v + "&op=translate"} target="_blank">{v.toUpperCase()[0] + v.slice(1)}</a>
             <div className="quizContainer">
                 {vQuiz}
             </div>

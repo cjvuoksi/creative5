@@ -63,14 +63,28 @@
   margin-bottom: 1em;
 }
 
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5em;
+  height: 3em;
+}
+
 .icon {
   width: 5em; 
+  height: fit-content;
   border-radius: .2em;
   filter: opacity(.9);
 }
 
 .icon:hover {
   filter: none; 
+}
+
+.icon:active {
+  filter: opacity(.8); 
+  width: 4.5em; 
 }
 
 .footer {
@@ -95,7 +109,7 @@
 }
 
 .hidden {
-  display: none; 
+  display: none !important; 
 }
 
 .quizIn {
@@ -107,8 +121,15 @@
   text-align: center;
 }
 
-.quizBlock {
-  display: block;
+.verb {
+  padding: 1em;
+  font-size: 2em;
+  font-weight: light;
+  color: #444; 
+}
+
+.verb:hover {
+  color: #222; 
 }
 
 .quizContainer {
@@ -116,10 +137,6 @@
   flex-direction: column;
 }
 
-.quiz-desc {
-  display: flex; 
-  justify-content: flex-end;
-}
 
 @media only screen and (min-width: 600px) {
   .quizContainer {
@@ -127,6 +144,11 @@
     gap: 1em; 
   }
   
+  .quiz-desc {
+    display: flex; 
+    justify-content: flex-end;
+  }
+
   .quizIn {
     display: grid;
     grid-template-columns: 1fr 205px 1fr;
@@ -145,13 +167,17 @@
 .setting {
   padding: 2px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr .2fr;
   align-items: center;
 }
 
 .setting-text {
   display: flex;
   justify-content: center;
+}
+
+.settings {
+  display: grid;
 }
 
 /* Landing Page */
@@ -209,10 +235,12 @@ input {
   max-width: 175px; 
   border-radius: 1em;
   padding: .2em;
+  color: #555; 
 }
 
 input:focus {
   max-width: 205px !important; 
+  color: #333 !important; 
 }
 
 input:hover {
@@ -224,7 +252,7 @@ button {
   background-color: #337ab7;
   border-radius: 0.2em;
   text-align: center;
-  padding: .7em;
+  padding: .5em;
   color: aliceblue; 
   border: none; 
 }
@@ -242,4 +270,18 @@ button:disabled {
   background-color: #f8f8f8;
   border: 1px solid #e7e7e7;
   color: #777777;
+}
+
+h2 {
+  font-weight: lighter;
+  border-bottom: 1px solid black;
+}
+
+h1 {
+  font-weight: lighter;
+  padding-top: .2em;
+}
+
+i {
+  font-weight: lighter;
 }
