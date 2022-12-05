@@ -31,7 +31,6 @@ function Settings( {settings, signIn, setCookie } ) {
         for (let i of tmp) {
             tmpPref.push(i[Object.keys(i)[0]]); 
         }
-        console.log("tmpPref: " + tmpPref); 
         setPref(tmpPref); 
     }
 
@@ -39,8 +38,6 @@ function Settings( {settings, signIn, setCookie } ) {
         let tmp = JSON.parse(JSON.stringify(settings)); 
         let index = 0; 
         for (let i of tmp) {
-            console.log("I: " + i[Object.keys(i)[0]]);
-            console.log("Object keys: " + Object.keys(i)[0]); 
             i[Object.keys(i)[0]] = pref[index]; 
         }
         setCookie(['1s','2s','3s','1p','2p','3p','present','past','cond','pass','part'], pref); 
@@ -58,7 +55,6 @@ function Settings( {settings, signIn, setCookie } ) {
 
     const upList = () => {
             setList(settings.map((item, index) => {
-                console.log(item); 
                 let value = Object.keys(item)[0]
                 return(
                     <div key={value} className="setting">

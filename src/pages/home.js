@@ -15,6 +15,7 @@ function Home() {
 
     return(
         <div className="landing main">
+            <h1>Practice Finnish conjugations</h1>
             <div className="landing-body">
             <Link to="/quiz" className="landing-link">Start practicing</Link>
             <Link to="/settings" className="landing-link">Configure practice</Link>   

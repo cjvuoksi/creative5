@@ -97,7 +97,6 @@ function Quiz( { settings, signIn }) {
     }
 
     const parseVerb = (verb) => { 
-        console.log(verb); 
         setV(verb); 
         let three = verb.slice(-3); 
         let two = verb.slice(-2); 
@@ -159,20 +158,28 @@ function Quiz( { settings, signIn }) {
          two === 'ea' || two === 'ia' || two === 'yä' || two === 'eä' || two === 'iä' ||
          two === 'aa' || two === 'ää') {
             let stem = verb.slice(0,-1); 
+            let stemS = stem; 
             let a = verb.slice(-1); 
             let soft = soften(stem); 
             let past = (soft.slice(-1) === a || soft.slice(-1) === 'e' || soft.slice(-1) === 'i') ? soft.slice(0,-1) : soft;
             let condS = (soft.slice(-1) === 'e' || soft.slice(-1) === 'i') ? stem.slice(0,-1) : stem; 
             let pastS = (condS.slice(-1) === a ? condS.slice(0,-1) : condS); 
-            if ((past.slice(-4).search('rr') || past.slice(-4).search('ll') || past.slice(-4).search('nn')) && two === a + a) {
+            let irreg = ['pitää','itää','hoitaa','suotaa','vuotaa','kaataa','mataa','sataa','raataa','noutaa','soutaa','joutaa','syytää','jäytää','hyötää','säätää','sietää','vetää','noutaa']
+            if ((past.slice(-4).search('rr') >= 0 || past.slice(-4).search('ll') >= 0|| past.slice(-4).search('nn') >= 0) && two === a + a) {
                 past = past.slice(0,-4) + past.slice(-4).replace('rr', 'rs'); 
                 pastS = pastS.slice(0,-4) + pastS.slice(-4).replace('rt', 'rs'); 
                 past = past.slice(0,-4) + past.slice(-4).replace('ll', 'ls'); 
                 pastS = pastS.slice(0,-4) + pastS.slice(-4).replace('lt', 'ls'); 
                 past = past.slice(0,-4) + past.slice(-4).replace('nn', 'ns'); 
                 pastS = pastS.slice(0,-4) + pastS.slice(-4).replace('nt', 'ns'); 
+                
             }
-            if (three === 'kaa' || three === 'paa' || three === 'vaa' || three === 'laa' || verb === "antaa" || verb === "kantaa") {
+            else if (three === 't' + a + a && verb.slice(-4) !== 'tt' + a + a && verb.slice(-4) !== 'st' + a + a && irreg.indexOf(verb) < 0 ) {
+                past = past.slice(0,-2) + past.slice(-2).replace('d','s'); 
+                pastS = pastS.slice(0,-2) + pastS.slice(-2).replace('t','s');
+                if (verb === 'tietää' || verb === 'taitaa') stemS = stemS.slice(0,-2) + 'n'; 
+            }
+            if (three === 'kaa' || three === 'paa' || three === 'vaa' || three === 'laa' || verb === "antaa" || verb === "kantaa" || verb === "kaataa" || verb === "mataa" || verb === "saattaa" || verb === "sataa" || verb === 'rataa') {
                 if (verb === "antaa" || verb === "kantaa") {
                     past = past.replace('ns','nn'); 
                     pastS = pastS.replace('ns','nt'); 
@@ -210,7 +217,7 @@ function Quiz( { settings, signIn }) {
                 pass_conditional: (soft.slice(-1) === a ? soft.slice(0,-1) + 'e' : soft) + 'tt' + a + 'isiin',
                 part_pass_past: (soft.slice(-1) === a ? soft.slice(0,-1) + 'e' : soft) + 'tt' + (a === 'a' ? 'u' : 'y'),
                 part_pass_act: (soft.slice(-1) === a ? soft.slice(0,-1) + 'e' : soft) + 'tt' + a + 'v' + a,
-                part_past: stem + 'n' + (a === 'a' ? 'u' : 'y') + 't',
+                part_past: stemS + 'n' + (a === 'a' ? 'u' : 'y') + 't',
                 part_act: stem + 'v' + a
             }); 
         }
@@ -382,7 +389,6 @@ function Quiz( { settings, signIn }) {
             for (let j of Object.keys(aste)) {
                 if (vaihtelu && text.search(aste[j]) >= 0 && aste[j]) {
                     if (text.search(j) < 0) {
-                        console.log(j); 
                         text = text.replace(aste[j], j);
                     }
                     vaihtelu = false; 
@@ -396,10 +402,7 @@ function Quiz( { settings, signIn }) {
         let val = e.target.value; 
         let index = e.target.dataset.index; 
         let tmp = resp.filter(q => {return true});
-        console.log(tmp)
-        console.log('index: ' + index + " value: " + val); 
         tmp[index] = val; 
-        console.log(tmp); 
         setResp(tmp); 
     }
 
@@ -453,7 +456,6 @@ function Quiz( { settings, signIn }) {
         else {
             quiz.push(''); quiz.push(''); quiz.push(''); quiz.push('');//FLAG
         }
-        console.log(quiz);  
         setVQuiz(quiz.map((value, index) => {
             return (
                 <Fragment key={index}>
@@ -511,6 +513,8 @@ function Quiz( { settings, signIn }) {
     // 
     // <button onClick={() => console.log(resp)}>Log response</button>
     // <button onClick={() => console.log(key)}>Log key</button>
+    // <input placeholder="tense" defaultValue="" onChange={e => parseVerb(e.target.value)}></input>
+    // <button onClick={() => {console.log(conj);console.log(resp)}}>Log conjugations</button>
     // <input placeholder="tense" defaultValue="" onChange={e => parseVerb(e.target.value)}></input>
     // <button onClick={() => {console.log(conj);console.log(resp)}}>Log conjugations</button>
 

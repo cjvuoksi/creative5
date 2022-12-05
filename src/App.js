@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom"
 import Quiz from "./pages/quiz";
 import Settings from "./pages/settings";
-import About from "./pages/about";
 import None from "./pages/none";
 import Home from "./pages/home";
 
@@ -68,18 +67,16 @@ function App() {
   }
 
   return (
-    <Router>
+    <Router basename='/creative5/build'>
       <nav className="navBar">
         <NavLink to="/" className="icon-container"><img className="icon" src={icon}></img></NavLink>
         <NavLink to="/quiz">Quiz</NavLink>
         <NavLink to="/settings">Settings</NavLink>
-        <NavLink to="/about">About</NavLink>
       </nav>
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route path="/quiz" element={<Quiz settings={settings} signIn={signIn}/>}/>        
         <Route path="/settings" element={<Settings settings={settings} setSettings={setSettings} signIn={signIn} setCookie={setCookie}/>}></Route>
-        <Route path="/about" element={<About/>}></Route>
         <Route path="*" element={<None/> }></Route>
       </Routes>
       <div className="footer">

@@ -158,16 +158,22 @@
     align-content: center;
     gap: .2em; 
   }
+
+  .setting {
+    grid-template-columns: 1fr .2fr !important;
+  }
 }
 
 
 
 /* Settings */
 
+
+
 .setting {
   padding: 2px;
   display: grid;
-  grid-template-columns: 1fr .2fr;
+  grid-template-columns: 1fr;
   align-items: center;
 }
 
